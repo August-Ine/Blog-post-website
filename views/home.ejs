@@ -3,6 +3,14 @@
     <h1>Home</h1>
     <p>
         <%= homeContent %>
+            <% posts.forEach((post)=>{%>
+                <h1>
+                    <%=post.postTitle%>
+                </h1>
+                <p>
+                    <%=post.postBody%>
+                </p>
+                <%})%>
     </p>
 
     <%- include("partials/footer")-%>
