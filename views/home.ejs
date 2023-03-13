@@ -7,10 +7,17 @@
                 <h1>
                     <%=post.postTitle%>
                 </h1>
-                <p>
+                <p class="truncate">
                     <%=post.postBody%>
                 </p>
                 <%})%>
     </p>
+    <script type="text/javascript">
+        const elements = document.getElementsByClassName("truncate");//fetch paragraphs to be truncated
+        for (let i = 0; i < elements.length; i++) {
+            const truncated = elements[i].textContent.slice(0, 150) + "...";
+            elements[i].textContent = truncated;
+        }
+    </script>
 
     <%- include("partials/footer")-%>

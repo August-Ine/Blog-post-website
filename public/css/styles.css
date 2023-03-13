@@ -45,3 +45,14 @@ main {
     font-size: 12px;
     color: #fff;
 }
+
+/* .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    /* number of lines to display */
+/*-webkit-box-orient: vertical;
+}
+
+*/
