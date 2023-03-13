@@ -10,6 +10,13 @@ To install the application, follow these steps:
 4. Start the server: npm start
 5. Open your web browser and navigate to http://localhost:3030
 
+### Technologies Used
+- Node.js: a server-side JavaScript runtime environment
+- Express.js: a web framework for Node.js
+- HTML: a markup language used to create web pages
+- CSS: a stylesheet language used to style web pages
+- JavaScript: a programming language used to add interactivity to web pages
+
 ## Usage
 Once you have the application running, you can use it to publish and read blog posts. To publish a blog post, simply click the "Compose" button on the navigation bar. You will be taken to a page where you can enter the title and content of your post.
 
