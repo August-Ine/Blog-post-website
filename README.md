@@ -1,5 +1,5 @@
 # Blog Post Website
-Blog Post Website is a Node.js and Express.js application that allows users to publish blog posts and read them. It uses the EJS templating engine to dynamically generate HTML pages based on data from the server. The application also uses the MongoDB database to store blog post data.
+Blog Post Website is a Node.js and Express.js application that allows users to publish blog posts and read them. It uses the EJS templating engine to dynamically generate HTML pages based on data from the server.
 
 ## Installation
 To install the application, follow these steps:
