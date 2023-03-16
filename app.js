@@ -2,49 +2,72 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
-const { application } = require("express");
 const _ = require('lodash');
 const mongoose = require("mongoose");
+const { ServerApiVersion } = require('mongodb');
+const dbModel = require("./dbModel.js"); //import js file for the db model
 
-const homeStartingContent = "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
-const aboutContent = "Hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Dictumst vestibulum rhoncus est pellentesque elit ullamcorper. Non diam phasellus vestibulum lorem sed. Platea dictumst quisque sagittis purus sit. Egestas sed sed risus pretium quam vulputate dignissim suspendisse. Mauris in aliquam sem fringilla. Semper risus in hendrerit gravida rutrum quisque non tellus orci. Amet massa vitae tortor condimentum lacinia quis vel eros. Enim ut tellus elementum sagittis vitae. Mauris ultrices eros in cursus turpis massa tincidunt dui.";
-const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
-
+//create app
 const app = express();
+
+//database connection
+const uri = "mongodb+srv://akirui95:testing123@cluster0.sicizhi.mongodb.net/?retryWrites=true&w=majority"; //url to connect to mongodb atlas
 
 //prerequisites
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-//test mongodbAtlas db connection
-async function connectDb() {
-
-
+//route to handle get request to root
+app.get("/", async (req, res) => {
+  //connect to db, create db if doesnt exist
   try {
-    mongoose.connect("mongodb+srv://akirui95:testing123@cluster0.sicizhi.mongodb.net/blogdb");
+    await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1, dbName: dbModel.dbName });
+    console.log("Connection to mongodbatlas succesful.");
+    // client.close();
+  } catch (err) {
+    console.log(err);
   }
-}
-
-
-//global variables
-let posts = []; //empty array to store post objects
-
-//route to handle get request to home
-app.get("/", (req, res) => {
-  res.render("home", { homeContent: homeStartingContent, posts: posts }); //render ejs template with content
+  //read from the db
+  try {
+    const blogsList = await dbModel.Blog.find({});
+    //blogsList empty?; runs for the first time to insert default blogs
+    if (blogsList.length === 0) {
+      try {
+        await dbModel.Blog.insertMany(dbModel.defaultBlogs);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      //render ejs template with blogs
+      res.render("home", { blogsList: blogsList });
+      // close the MongoDB Atlas connection
+      mongoose.connection.close();
+    }
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 //route for post page
-app.get("/posts/:postName", (req, res) => {
-  posts.forEach((post) => { //loop through all the objects in posts array
-    if (_.lowerCase(post.postTitle) === _.lowerCase(req.params.postName)) {
-      res.render("post", { post: post });
-    } else {
-      console.log("match not found");
-      res.send("404");
-    };
-  });
+app.get("/posts/:blogid", async (req, res) => {
+  const blogId = req.params.blogid;
+  //connect to db
+  try {
+    await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, dbName: dbModel.dbName, serverApi: ServerApiVersion.v1 });
+    console.log("Connection to mongodbatlas succesful.");
+  } catch (err) {
+    console.log(err);
+  }
+  //find the blog document by id from the collection
+  try {
+    const blogPost = await dbModel.Blog.findById(blogId).exec();
+    console.log("found document!");
+    //render post ejs template with the blog post
+    res.render("post", { blogPost: blogPost });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 //route for about page
@@ -63,13 +86,32 @@ app.get("/compose", (req, res) => {
 });
 
 //handling post request from compose page
-app.post("/compose", (req, res) => {
-  let post = {
-    postTitle: req.body.post_title,
-    postBody: req.body.post_body,
-    postLink: "posts/" + _.lowerCase(req.body.post_title)
-  };
-  posts.push(post);
+app.post("/compose", async (req, res) => {
+  //connect to db
+  try {
+    await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1, dbName: dbModel.dbName });
+    console.log("Connection to mongodbatlas succesful.");
+  } catch (err) {
+    console.log(err);
+  }
+
+  //create new blog document
+  const blog = new dbModel.Blog(
+    {
+      name: _.capitalize(req.body.post_title),
+      content: req.body.post_body
+    }
+  );
+  //save the blog to db
+  try {
+    await blog.save();
+    console.log("saving blog to db successful");
+  } catch (e) {
+    console.log(e);
+  }
+  //close connection to db
+  await mongoose.connection.close();
+  //redirect to home page
   res.redirect("/");
 });
 
