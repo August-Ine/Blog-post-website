@@ -2,19 +2,18 @@
 
     <h1>Home</h1>
     <p>
-        <%= homeContent %>
-            <% posts.forEach((post)=>{%>
-                <h1>
-                    <%=post.postTitle%>
-                </h1>
-                <p class="truncate">
-                    <%=post.postBody.substring(0,100)+"..."%>
-                        <a href="<%=post.postLink%>"><button type="button" class="btn btn-link">
-                                Read more
-                            </button></a>
-                </p>
+        <% blogsList.forEach((blog)=>{%>
+            <h2>
+                <%=blog.name%>
+            </h2>
+            <p class="truncate">
+                <%=blog.content.substring(0,100)+"..."%>
+                    <a href="posts/<%=blog._id%>"><button type="button" class="btn btn-link">
+                            Read more
+                        </button></a>
+            </p>
 
-                <%})%>
+            <%})%>
     </p>
 
     <%- include("partials/footer")-%>
