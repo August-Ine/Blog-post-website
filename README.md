@@ -24,9 +24,12 @@ Before running the application, make sure to set up the following variables:
 - MongoDB Atlas: a fully managed, cloud-based database service that allows users to easily deploy, scale, and manage MongoDB databases with automated backups, monitoring, and security features.
 
 ## Usage
-Once you have the application running, you can use it to publish and read blog posts. To publish a blog post, simply click the "Compose" button on the navigation bar. You will be taken to a page where you can enter the title and content of your post.
+Once you have the application running, you can use it to publish and read blog posts. To publish a blog post, simply click the "NEW BLOG" button on the navigation bar. You will be taken to a page where you can enter the title and content of your post.
 
 To read existing blog posts, simply navigate to the home page. You will see a list of all the blog posts that have been published. You can click on a post to view its contents.
 
 ### Contributing
 If you would like to contribute to the development of Blog Post Website, you are welcome to submit a pull request. 
+
+### Acknowledgements
+This project was created as part of a tutorial on building a blog post website with Node.js, Express, EJS, and MongoDB Atlas. Thanks to the tutorial authors for their guidance and inspiration.
