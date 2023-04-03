@@ -7,7 +7,7 @@ To install the application, follow these steps:
 1. Clone the repository: git clone https://github.com/August269/Blog-post-website.git
 2. Change into the project directory: cd Blog-post-website
 3. Install dependencies: npm install
-4. Start the server: npm start
+4. Start the server: nodemon app.js
 5. Open your web browser and navigate to http://localhost:3030
 
 ## Configuration
